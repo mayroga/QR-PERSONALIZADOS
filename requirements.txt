@@ -1,0 +1,7 @@
+
+Flask
+qrcode[pil]
+Pillow
+reportlab
+gunicorn
+unicorn
