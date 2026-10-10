@@ -1,29 +1,35 @@
-
 <!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Generador de códigos QR personalizados para negocios y particulares.">
-<title>QR Bonito | Generador de códigos QR</title>
+<meta name="description" content="Crea códigos QR personalizados para negocios y personas. Añade nombre, dirección, frase, colores y logotipo opcional.">
+<title>QR Bonito | Generador de códigos QR personalizados</title>
 <style>
 :root{color-scheme:light;--ink:#172033;--muted:#667085;--line:#dfe4ec;--blue:#2563eb;--paper:#fff;--wash:#f4f6fa}
 *{box-sizing:border-box}
-body{margin:0;background:var(--wash);color:var(--ink);font-family:Arial,"Segoe UI",sans-serif;line-height:1.5}
-main{width:min(1120px,calc(100% - 28px));margin:28px auto 48px}
+body{margin:0;background:var(--wash);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+main{width:min(1120px,100% - 28px);margin:28px auto 48px}
 header{text-align:center;margin:0 auto 24px;max-width:760px}
 .eyebrow{display:inline-block;background:#e8efff;color:#1d4ed8;border-radius:999px;padding:6px 12px;font-size:.82rem;font-weight:750}
-h1{font-size:clamp(2rem,5vw,3.1rem);letter-spacing:-.04em;line-height:1.08;margin:14px 0 10px}
+h1{font-size:clamp(2rem,5vw,3.1rem);letter-spacing:-.045em;line-height:1.08;margin:14px 0 10px}
 header p{color:var(--muted);margin:0;font-size:1.05rem}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.9fr);gap:22px;align-items:start}
 .panel{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 10px 32px #16213b0a}
 h2{font-size:1.15rem;margin:0 0 6px}
 .help{font-size:.9rem;color:var(--muted);margin:0 0 18px}
 label{display:block;font-weight:700;font-size:.91rem;margin:0 0 7px}
-input[type=text],input[type=tel],textarea{display:block;width:100%;padding:12px 13px;border:1px solid #cbd3df;border-radius:10px;background:white;color:var(--ink);font:inherit;min-height:46px}
+input[type=text],input[type=url],input[type=tel],textarea,select{display:block;width:100%;padding:12px 13px;border:1px solid #cbd3df;border-radius:10px;background:white;color:var(--ink);font:inherit;min-height:46px}
 textarea{resize:vertical;min-height:78px}
-input:focus,textarea:focus{outline:3px solid #2563eb26;border-color:var(--blue)}
+input:focus,textarea:focus,select:focus{outline:3px solid #2563eb26;border-color:var(--blue)}
 .field{margin-bottom:16px}
+.duration-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.duration-option{position:relative}
+.duration-option input{position:absolute;opacity:0}
+.duration-option span{display:flex;align-items:center;justify-content:center;text-align:center;min-height:48px;padding:9px 5px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:.88rem;font-weight:750;cursor:pointer}
+.duration-option input:checked+span{border-color:var(--blue);background:#eff5ff;color:#1d4ed8;box-shadow:inset 0 0 0 1px var(--blue)}
+.qr-url{overflow-wrap:anywhere;font-size:.85rem;background:#f4f6fa;padding:10px;border-radius:8px}
+@media(max-width:480px){.duration-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .color-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .color-pick{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px}
@@ -36,15 +42,15 @@ input[type=file]{display:block;width:100%;font:inherit;font-size:.9rem;padding:1
 .style-option input{position:absolute;opacity:0}
 .style-option span{display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid var(--line);border-radius:10px;padding:10px 4px;min-height:44px;font-size:.84rem;font-weight:700;cursor:pointer}
 .style-option input:checked+span{border-color:var(--blue);background:#eff5ff;color:#1d4ed8;box-shadow:inset 0 0 0 1px var(--blue)}
-button{border:0;border-radius:11px;padding:13px 16px;background:var(--blue);color:white;font:inherit;font-weight:800;cursor:pointer;text-align:center;display:inline-flex;justify-content:center;align-items:center;min-height:47px}
-button:hover{filter:brightness(.95)}
+button,.button{border:0;border-radius:11px;padding:13px 16px;background:var(--blue);color:white;font:inherit;font-weight:800;cursor:pointer;text-align:center;text-decoration:none;display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:47px}
+button:hover,.button:hover{filter:brightness(.95)}
 button:disabled{opacity:.55;cursor:wait}
 .btn-secondary{background:#eef2f7;color:var(--ink);border:1px solid var(--line)}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
 .actions .primary{grid-column:1/-1}
 .preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
 .pill{font-size:.78rem;font-weight:750;color:#167247;background:#e6f7ee;padding:5px 9px;border-radius:999px}
-.preview-stage{min-height:340px;display:flex;align-items:center;justify-content:center;border:1px dashed #cbd3df;border-radius:15px;padding:14px;background:#f8f9fc;overflow:hidden}
+.preview-stage{min-height:340px;display:flex;align-items:center;justify-content:center;border:1px dashed #cbd3df;border-radius:15px;padding:14px;background:repeating-linear-gradient(45deg,#f9fafc,#f9fafc 10px,#f4f6fa 10px,#f4f6fa 20px);overflow:hidden}
 #qrPreview{display:none;max-width:100%;max-height:650px;width:auto;height:auto;object-fit:contain;background:white;border-radius:6px;box-shadow:0 6px 24px #16213b1c}
 .empty{text-align:center;color:var(--muted);max-width:280px;padding:22px}
 .empty strong{display:block;color:var(--ink);margin-bottom:6px}
@@ -62,13 +68,14 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;margin:22px auto 0;
 <header>
 <span class="eyebrow">SENCILLO · PERSONALIZABLE · LISTO PARA IMPRIMIR</span>
 <h1>Tu QR, con tu propio estilo</h1>
-<p>Crea un código QR para tu negocio o uso personal. Añade tus palabras, elige los colores y descarga tu diseño en PNG o PDF.</p>
+<p>Crea un código QR para tu negocio o para uso personal. Añade una fotografía, elige el estilo y decide cuánto tiempo funcionará tu código QR.</p>
 </header>
 <div class="layout">
-<section class="panel">
-<h2>Personaliza tu diseño</h2>
+<section class="panel" aria-labelledby="formTitle">
+<h2 id="formTitle">Personaliza tu diseño</h2>
 <p class="help">Completa lo que quieras. Solo el contenido del QR es obligatorio.</p>
 <form id="qrForm" enctype="multipart/form-data">
+<input type="hidden" id="qr_token" name="qr_token" value="">
 <div class="field">
 <label for="text">¿A dónde debe llevar el QR? *</label>
 <textarea id="text" name="text" required maxlength="2000" placeholder="Pega una dirección web o escribe el texto que quieres compartir. Ej.: https://tusitio.com"></textarea>
@@ -95,8 +102,27 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;margin:22px auto 0;
 <div class="field">
 <label for="logo">Logotipo (opcional)</label>
 <input id="logo" name="logo" type="file" accept="image/png,image/jpeg,image/webp">
-<p class="small">PNG, JPG o WEBP. Máximo 2 MB. El logotipo es opcional.</p>
+<p class="small">PNG, JPG o WEBP. Máximo 2 MB. El logotipo aparece pequeño en el diseño.</p>
 </div>
+<div class="field">
+<label for="photo">Fotografía decorativa (opcional)</label>
+<input id="photo" name="photo" type="file" accept="image/png,image/jpeg,image/webp">
+<p class="small">PNG, JPG o WEBP. Máximo 4 MB. La fotografía se coloca aparte y nunca tapa el QR.</p>
+</div>
+<div class="field">
+<label>¿Cuánto tiempo quieres que funcione el QR?</label>
+<p class="small">Elige una duración. Al terminar, el enlace mostrará un aviso de vencimiento.</p>
+<div class="duration-grid">
+<label class="duration-option"><input type="radio" name="duration" value="1d"><span>1 día</span></label>
+<label class="duration-option"><input type="radio" name="duration" value="1m"><span>1 mes</span></label>
+<label class="duration-option"><input type="radio" name="duration" value="6m"><span>6 meses</span></label>
+<label class="duration-option"><input type="radio" name="duration" value="1y" checked><span>1 año</span></label>
+<label class="duration-option"><input type="radio" name="duration" value="2y"><span>2 años</span></label>
+<label class="duration-option"><input type="radio" name="duration" value="3y"><span>3 años</span></label>
+<label class="duration-option"><input type="radio" name="duration" value="4y"><span>4 años</span></label>
+<label class="duration-option"><input type="radio" name="duration" value="5y"><span>5 años</span></label>
+<label class="duration-option"><input type="radio" name="duration" value="life"><span>De por vida</span></label>
+</div></div>
 <div class="field">
 <label>Estilo del diseño</label>
 <div class="styles">
@@ -113,7 +139,7 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;margin:22px auto 0;
 <label class="color-pick"><input type="color" id="foreground" name="foreground" value="#172033"><span>QR y texto</span></label>
 <label class="color-pick"><input type="color" id="accent" name="accent" value="#2563EB"><span>Detalle</span></label>
 </div>
-<p class="small">Consejo: usa un QR oscuro sobre un fondo claro para facilitar el escaneo.</p>
+<p class="small">Consejo: elige un QR oscuro sobre un fondo claro para que sea más fácil de escanear.</p>
 </div>
 <div class="actions">
 <button class="primary" id="generateBtn" type="submit">Crear vista previa</button>
@@ -123,100 +149,103 @@ footer{text-align:center;color:var(--muted);font-size:.82rem;margin:22px auto 0;
 <div id="status" class="status" role="status" aria-live="polite"></div>
 </form>
 </section>
-<section class="panel">
-<div class="preview-head">
-<div><h2>Vista previa</h2><p class="help" style="margin:4px 0 0">Tu diseño aparecerá aquí.</p></div>
-<span class="pill">Sin fotografías</span>
-</div>
+<section class="panel" aria-labelledby="previewTitle">
+<div class="preview-head"><div><h2 id="previewTitle">Vista previa</h2><p class="help" style="margin:4px 0 0">Tu diseño aparecerá aquí.</p></div><span class="pill">QR personalizable</span></div>
 <div class="preview-stage">
 <div class="empty" id="emptyState"><strong>Tu diseño empieza aquí</strong>Escribe el contenido del QR y pulsa «Crear vista previa».</div>
 <img id="qrPreview" alt="Vista previa del código QR personalizado">
 </div>
-<p class="tip">Antes de imprimir, escanea el QR con la cámara de tu teléfono y confirma que abre el contenido correcto.</p>
+<p class="tip">Antes de imprimir, escanea el QR con la cámara de tu teléfono. El QR usa un enlace de esta aplicación para controlar el vencimiento.</p><div id="qrLink" class="qr-url" hidden></div>
 </section>
 </div>
-<footer>Este generador crea códigos QR estáticos. El enlace codificado no cambia al modificar el diseño y la página de destino debe seguir disponible.</footer>
+<footer>Los QR con duración usan enlaces controlados por esta aplicación. Para conservarlos después de reinicios o despliegues, configura un disco persistente en el alojamiento y define QR_DB_PATH en ese disco. “De por vida” significa que no se asigna fecha de vencimiento; la disponibilidad depende de que el servicio y sus datos sigan activos.</footer>
 </main>
 <script>
-(()=>{
-const form=document.getElementById('qrForm');
-const preview=document.getElementById('qrPreview');
-const emptyState=document.getElementById('emptyState');
-const statusBox=document.getElementById('status');
-const generateBtn=document.getElementById('generateBtn');
-let previewUrl='';
+(() => {
+const form = document.getElementById('qrForm');
+const preview = document.getElementById('qrPreview');
+const emptyState = document.getElementById('emptyState');
+const statusBox = document.getElementById('status');
+const generateBtn = document.getElementById('generateBtn');
+let lastImage = '';
+const qrLink = document.getElementById('qrLink');
 
-function message(text,type='error'){
- statusBox.textContent=text;
- statusBox.className='status '+type;
+function message(text, type='error') {
+  statusBox.textContent = text;
+  statusBox.className = 'status ' + type;
 }
-function clearMessage(){
- statusBox.textContent='';
- statusBox.className='status';
+function clearMessage() {
+  statusBox.textContent = '';
+  statusBox.className = 'status';
 }
-async function createPreview(event){
- if(event)event.preventDefault();
- clearMessage();
- if(!form.reportValidity())return;
- generateBtn.disabled=true;
- generateBtn.textContent='Creando diseño…';
- try{
-  const response=await fetch('/generate_qr',{method:'POST',body:new FormData(form)});
-  const data=await response.json();
-  if(!response.ok)throw new Error(data.error||'No se pudo crear el QR.');
-  preview.src=data.image;
-  preview.style.display='block';
-  emptyState.style.display='none';
-  message('¡Diseño creado! Puedes descargarlo en PNG o PDF.','success');
- }catch(error){
-  message(error.message||'No se pudo conectar con el servidor.');
- }finally{
-  generateBtn.disabled=false;
-  generateBtn.textContent='Crear vista previa';
- }
+function formData() {
+  return new FormData(form);
 }
-async function downloadFile(endpoint,filename){
- clearMessage();
- if(!form.reportValidity())return;
- const button=document.getElementById(endpoint==='/download_png'?'pngBtn':'pdfBtn');
- const oldText=button.textContent;
- button.disabled=true;
- button.textContent='Preparando…';
- try{
-  const response=await fetch(endpoint,{method:'POST',body:new FormData(form)});
-  const type=response.headers.get('content-type')||'';
-  if(!response.ok||type.includes('application/json')){
-   let error='No se pudo preparar la descarga.';
-   try{const data=await response.json();error=data.error||error}catch(_){}
-   throw new Error(error);
+async function createPreview(event) {
+  if (event) event.preventDefault();
+  clearMessage();
+  if (!form.reportValidity()) return;
+  generateBtn.disabled = true;
+  generateBtn.textContent = 'Creando diseño…';
+  try {
+    const response = await fetch('/generate_qr', {method:'POST', body:formData()});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'No se pudo crear el QR.');
+    lastImage = data.image;
+    preview.src = lastImage;
+    if(data.token)form.elements.qr_token.value=data.token;
+    if(data.qr_url){qrLink.hidden=false;qrLink.textContent='Enlace del QR: '+data.qr_url+(data.expires_at?' · Vence: '+new Date(data.expires_at).toLocaleString():' · Sin fecha de vencimiento');}
+    preview.style.display = 'block';
+    emptyState.style.display = 'none';
+    message('¡Diseño creado! Puedes descargarlo en PNG o PDF. El enlace generado tiene la duración seleccionada.', 'success');
+  } catch (error) {
+    message(error.message || 'No se pudo conectar con el servidor.');
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Crear vista previa';
   }
-  const blob=await response.blob();
-  const url=URL.createObjectURL(blob);
-  const link=document.createElement('a');
-  link.href=url;
-  link.download=filename;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-  message('Archivo preparado para guardar.','success');
-  if(endpoint==='/download_png'){
-   if(previewUrl)URL.revokeObjectURL(previewUrl);
-   previewUrl=URL.createObjectURL(blob);
-   preview.src=previewUrl;
-   preview.style.display='block';
-   emptyState.style.display='none';
-  }
- }catch(error){
-  message(error.message||'Error de conexión con el servidor.');
- }finally{
-  button.disabled=false;
-  button.textContent=oldText;
- }
 }
-form.addEventListener('submit',createPreview);
-document.getElementById('pngBtn').addEventListener('click',()=>downloadFile('/download_png','qr-personalizado.png'));
-document.getElementById('pdfBtn').addEventListener('click',()=>downloadFile('/download_pdf','qr-personalizado.pdf'));
+async function downloadFile(endpoint, filename) {
+  clearMessage();
+  if (!form.reportValidity()) return;
+  const button = endpoint === '/download_png' ? document.getElementById('pngBtn') : document.getElementById('pdfBtn');
+  const oldText = button.textContent;
+  button.disabled = true;
+  button.textContent = 'Preparando…';
+  try {
+    const response = await fetch(endpoint, {method:'POST', body:formData()});
+    const type = response.headers.get('content-type') || '';
+    if (!response.ok || type.includes('application/json')) {
+      let error = 'No se pudo preparar la descarga.';
+      try { const data = await response.json(); error = data.error || error; } catch (_) {}
+      throw new Error(error);
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+    message('Tu archivo se ha preparado para guardar.', 'success');
+    if (endpoint === '/download_png') {
+      lastImage = URL.createObjectURL(blob);
+      preview.src = lastImage;
+      preview.style.display = 'block';
+      emptyState.style.display = 'none';
+    }
+  } catch (error) {
+    message(error.message || 'Error de conexión con el servidor.');
+  } finally {
+    button.disabled = false;
+    button.textContent = oldText;
+  }
+}
+form.addEventListener('submit', createPreview);
+document.getElementById('pngBtn').addEventListener('click', () => downloadFile('/download_png', 'qr-personalizado.png'));
+document.getElementById('pdfBtn').addEventListener('click', () => downloadFile('/download_pdf', 'qr-personalizado.pdf'));
 })();
 </script>
 </body>
